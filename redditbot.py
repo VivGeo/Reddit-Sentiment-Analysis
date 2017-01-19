@@ -1,10 +1,9 @@
 import praw
+from praw.models import MoreComments
 import bs4
 import requests
-import os
-# may need to import os
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-# Consider using a read only version of Reddit
 file = open('input.txt', 'w')
 
 reddit = praw.Reddit(client_id='id',
@@ -12,16 +11,11 @@ reddit = praw.Reddit(client_id='id',
                      password='fakepassword',
                      user_agent='blank',
                      username='SentiSearchBot')
+
 print(reddit.user.me())
-# https://www.reddit.com/r/redditdev/search?q=hello+world+this+is+a+test&sort=relevance&t=all
-# q= [SEARCH QUERY, spaces replaced by +, modify relevance to desired parameter
-# &restrict_sr=on for specifying subreddit
-
-
-# don't forget to block /r/circlejerk, bound to
-# On second thought, let's not go to Circlelot, 'tis a silly place
 
 query = input("query: ").replace(' ', '+')
+print(" ")
 page = requests.get('https://www.reddit.com/r/all/search?q=' + query + '&sort=relevance&t=all')
 soup = bs4.BeautifulSoup(page.text,"html.parser")
 linkElems = soup.select('header[class="search-result-header"] > a')
@@ -39,28 +33,40 @@ for line in file2:
 
 file2.close()
 
-#print(links[0])
-#print(links[4])
-
-
 subreddit_links = []
 submission_links = []
 
 # Finding the subreddits
-
-
-
-for i in range(3):
-    print(links[i])
-    if links[i][-3:] == 'its':
-        subreddit_links.append(links[i])
+if (len(links) > 0):
+    for i in range(3):
+        if links[i][-3:] == 'its':
+            subreddit_links.append(links[i])
 
 # Finding the submissions
 for i in range (len(links)):
     if links[i][-3:] == 'sts':
         submission_links.append(links[i])
 
-print(subreddit_links)
 
-print(submission_links)
+submission_keys = []
 
+#Getting the unique submission 'keys' so they can be used with praw
+for i in submission_links:
+    ind = i.find("comments/") + 9
+    submission_keys.append(i[ind:ind+6])
+
+#Analyzing comment bodies for pos, neutral and negative scores
+print("Sentiment scores:")
+if len(submission_keys) > 0:
+    submission = reddit.submission(id=submission_keys[0])
+else:
+    print('no submissions loaded')
+    exit(0)
+sid = SentimentIntensityAnalyzer()
+
+
+for comment in submission.comments.list():
+    if isinstance(comment, MoreComments):
+        continue
+    polarity = sid.polarity_scores(comment.body)
+    print(polarity.items())
