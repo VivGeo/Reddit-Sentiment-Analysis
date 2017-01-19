@@ -18,7 +18,7 @@ print(reddit.user.me())
 # &restrict_sr=on for specifying subreddit
 
 
-# don't forget to block /r/circlejerk, bound to skew results
+# don't forget to block /r/circlejerk, bound to
 # On second thought, let's not go to Circlelot, 'tis a silly place
 
 query = input("query: ").replace(' ', '+')
@@ -32,9 +32,35 @@ for elem in linkElems:
     file.write(elem.get('href') + "\n")
 file.close()
 
-file2 = open('input.txt','r')
-print(type(file2))
+links = []
+file2 = open('input.txt', 'r')
+for line in file2:
+    links.append(file2.readline()[:-1])
 
 file2.close()
 
-end = input("")
+#print(links[0])
+#print(links[4])
+
+
+subreddit_links = []
+submission_links = []
+
+# Finding the subreddits
+
+
+
+for i in range(3):
+    print(links[i])
+    if links[i][-3:] == 'its':
+        subreddit_links.append(links[i])
+
+# Finding the submissions
+for i in range (len(links)):
+    if links[i][-3:] == 'sts':
+        submission_links.append(links[i])
+
+print(subreddit_links)
+
+print(submission_links)
+
