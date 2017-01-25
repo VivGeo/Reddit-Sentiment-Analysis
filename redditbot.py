@@ -3,7 +3,7 @@ from praw.models import MoreComments
 import bs4
 import requests
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-
+import numpy as np
 file = open('input.txt', 'w')
 
 reddit = praw.Reddit(client_id='id',
@@ -63,10 +63,19 @@ else:
     print('no submissions loaded')
     exit(0)
 sid = SentimentIntensityAnalyzer()
-
+positive = []
+neutral = []
+negative = []
 
 for comment in submission.comments.list():
     if isinstance(comment, MoreComments):
         continue
     polarity = sid.polarity_scores(comment.body)
-    print(polarity.items())
+    positive.append(polarity['pos'])
+    neutral.append(polarity['neu'])
+    negative.append(polarity['neg'])
+
+print("Sentiment Analysis:")
+print(np.mean(positive))
+print(np.mean(neutral))
+print(np.mean(negative))
