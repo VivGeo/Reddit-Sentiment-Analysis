@@ -6,12 +6,11 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import numpy as np
 file = open('input.txt', 'w')
 
-reddit = praw.Reddit(client_id='aPu7wRmhb-hQyA',
-                     client_secret='EDdDSCidXpngfsul_MhbdEfjc4k',
-                     password='Hackthevalley!',
-                     user_agent='pc:sentiscript:1.00 (by /u/SentiSearchBot)',
-                     username='SentiSearchBot')
-
+reddit = praw.Reddit(client_id='id',
+                     client_secret='secret',
+                     password='fakepassword',
+                     user_agent='blank',
+                     )
 print(reddit.user.me())
 
 query = input("query: ").replace(' ', '+')
