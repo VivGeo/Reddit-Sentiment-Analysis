@@ -6,10 +6,10 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import numpy as np
 file = open('input.txt', 'w')
 
-reddit = praw.Reddit(client_id='id',
-                     client_secret='secret',
-                     password='fakepassword',
-                     user_agent='blank',
+reddit = praw.Reddit(client_id='aPu7wRmhb-hQyA',
+                     client_secret='EDdDSCidXpngfsul_MhbdEfjc4k',
+                     password='Hackthevalley!',
+                     user_agent='pc:sentiscript:1.00 (by /u/SentiSearchBot)',
                      username='SentiSearchBot')
 
 print(reddit.user.me())
@@ -56,24 +56,24 @@ for i in submission_links:
     submission_keys.append(i[ind:ind+6])
 
 #Analyzing comment bodies for pos, neutral and negative scores
-print("Sentiment scores:")
-if len(submission_keys) > 0:
-    submission = reddit.submission(id=submission_keys[0])
-else:
+print("Processing Data")
+if len(submission_keys) == 0:
     print('no submissions loaded')
     exit(0)
+
 sid = SentimentIntensityAnalyzer()
 positive = []
 neutral = []
 negative = []
-
-for comment in submission.comments.list():
-    if isinstance(comment, MoreComments):
-        continue
-    polarity = sid.polarity_scores(comment.body)
-    positive.append(polarity['pos'])
-    neutral.append(polarity['neu'])
-    negative.append(polarity['neg'])
+for key in submission_keys:
+    submission = reddit.submission(id=key)
+    for comment in submission.comments.list():
+        if isinstance(comment, MoreComments):
+            continue
+        polarity = sid.polarity_scores(comment.body)
+        positive.append(polarity['pos'])
+        neutral.append(polarity['neu'])
+        negative.append(polarity['neg'])
 
 print("Sentiment Analysis:")
 print(np.mean(positive))
