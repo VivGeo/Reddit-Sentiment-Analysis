@@ -74,7 +74,13 @@ for key in submission_keys:
         neutral.append(polarity['neu'])
         negative.append(polarity['neg'])
 
+pos_avg = np.mean(positive)
+neutral_avg = np.mean(neutral)
+neg_avg = np.mean(negative)
 print("Sentiment Analysis:")
-print(np.mean(positive))
-print(np.mean(neutral))
-print(np.mean(negative))
+print(pos_avg)
+print(neutral_avg)
+print(neg_avg)
+
+print("Sentiment Ratio:")
+print(str(pos_avg/neg_avg))
