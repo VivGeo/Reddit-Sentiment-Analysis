@@ -9,7 +9,11 @@ import time
 import itertools
 from config import client_id, client_secret, password, user_agent
 
-
+def looksLikeLink(phrase):
+    if ("http" in phrase):
+        return True
+    else:
+        return False
 file = open('input.txt', 'w')
 
 reddit = praw.Reddit(client_id=client_id,
@@ -29,6 +33,9 @@ corpus = []
 
 start_time = time.time()
 
+print("Reddit Sentiment Analysis Script")
+print("Enter query to find general sentiment and related key phrases")
+
 query = input("query: ")
 all_subreddits = reddit.subreddit("all")
 query_results = all_subreddits.search(query, limit=10)
@@ -43,9 +50,6 @@ for submission in query_results:
         corpus.append(comment.body)
 
 r = Rake()
-
-print(len(corpus))
-print(type(corpus))
 r.extract_keywords_from_sentences(corpus)
 ranked_phrases = r.get_ranked_phrases()
 
@@ -54,11 +58,21 @@ end_time = time.time()
 
 
 
+print("\nResults\n")
 print("Sentiment Ratio:")
 print(str((pos_score/(pos_score + neg_score))* 100) + "%")
 print("Time Elapsed:")
-print(str(end_time - start_time) + " seconds")
+print("{0:.2f}".format(end_time - start_time) + " seconds")
 print("Key Phrases:")
 
-for phrase in itertools.islice(ranked_phrases, 10):
-    print(phrase)
+# iterate through the first 10 legimate phrases
+counter = 0
+for phrase in ranked_phrases:
+    if not(looksLikeLink(phrase)):
+        print(phrase)
+        counter += 1
+    if counter == 10:
+        break
+
+
+
