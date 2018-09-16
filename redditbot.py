@@ -4,12 +4,15 @@ import bs4
 import requests
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import numpy as np
+
+from config import client_id, client_secret, password, user_agent
+
 file = open('input.txt', 'w')
 
-reddit = praw.Reddit(client_id='id',
-                     client_secret='secret',
-                     password='fakepassword',
-                     user_agent='blank',
+reddit = praw.Reddit(client_id=client_id,
+                     client_secret=client_secret,
+                     password=password,
+                     user_agent=user_agent,
                      )
 print(reddit.user.me())
 
