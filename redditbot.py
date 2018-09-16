@@ -4,8 +4,9 @@ import bs4
 import requests
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import numpy as np
-
+import time
 from config import client_id, client_secret, password, user_agent
+
 
 file = open('input.txt', 'w')
 
@@ -14,28 +15,34 @@ reddit = praw.Reddit(client_id=client_id,
                      password=password,
                      user_agent=user_agent,
                      )
-print(reddit.user.me())
 
-query = input("query: ").replace(' ', '+')
-print(" ")
-page = requests.get('https://www.reddit.com/r/all/search?q=' + query + '&sort=relevance&t=all')
-soup = bs4.BeautifulSoup(page.text,"html.parser")
-linkElems = soup.select('header[class="search-result-header"] > a')
-# print(len((linkElems)))
+sid = SentimentIntensityAnalyzer()
 
-# scrub input (necessary for things to work)
-for elem in linkElems:
-    file.write(elem.get('href') + "\n")
-file.close()
 
-links = []
-file2 = open('input.txt', 'r')
-for line in file2:
-    links.append(file2.readline()[:-1])
+pos_score = 0
+neut_score = 0
+neg_score = 0
 
-file2.close()
+start_time = time.time()
 
-subreddit_links = []
+query = input("query: ")
+all_subreddits = reddit.subreddit("all")
+for submission in all_subreddits.search(query, limit=10):
+    for comment in submission.comments.list():
+        if isinstance(comment, MoreComments):
+            continue
+        polarity = sid.polarity_scores(comment.body)
+        pos_score += polarity['pos']
+        neut_score += polarity['neu']
+        neg_score += polarity['neg']
+
+end_time = time.time()
+
+print("Sentiment Ratio:")
+print(str((pos_score/(pos_score + neg_score))* 100) + "%")
+print("Time Elapsed:")
+print(end_time - start_time + " seconds")
+"""
 submission_links = []
 
 # Finding the subreddits
@@ -87,3 +94,4 @@ print(neg_avg)
 
 print("Sentiment Ratio:")
 print(str(pos_avg/neg_avg))
+"""
