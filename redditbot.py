@@ -14,7 +14,6 @@ def looksLikeLink(phrase):
         return True
     else:
         return False
-file = open('input.txt', 'w')
 
 reddit = praw.Reddit(client_id=client_id,
                      client_secret=client_secret,
@@ -23,7 +22,6 @@ reddit = praw.Reddit(client_id=client_id,
                      )
 
 sid = SentimentIntensityAnalyzer()
-
 
 pos_score = 0
 neut_score = 0
@@ -60,7 +58,7 @@ end_time = time.time()
 
 print("\nResults\n")
 print("Sentiment Ratio:")
-print(str((pos_score/(pos_score + neg_score))* 100) + "%")
+print(str("{0:.2f}".format(100*pos_score/(pos_score + neg_score))) + "% Positive")
 print("Time Elapsed:")
 print("{0:.2f}".format(end_time - start_time) + " seconds")
 print("Key Phrases:")

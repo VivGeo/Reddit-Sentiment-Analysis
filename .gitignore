@@ -3,7 +3,7 @@ env
 input.txt
 
 vim.exe.stackdump
-
+.vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
