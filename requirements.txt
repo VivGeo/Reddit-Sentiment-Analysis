@@ -3,7 +3,7 @@ bs4==0.0.1
 certifi==2018.8.24
 chardet==3.0.4
 idna==2.7
-nltk==3.3
+nltk==3.6.3
 numpy==1.15.1
 praw==6.0.0
 prawcore==1.0.0
